@@ -3,41 +3,20 @@ import requests
 import socket
 import json
 
-# Check if a URL is provided as a command-line argument
 if len(sys.argv) < 2:
-    print(f"Usage: {sys.argv[0]} <url>")
+    print("Usage: " + sys.argv[0] + " <url>")
     sys.exit(1)
 
-url = sys.argv[1]
+gethostby_ = socket.gethostbyname(sys.argv[1])
+print("The IP Address of the website " + sys.argv[1] + " is: " + gethostby_)
 
-try:
-    # Make a GET request to the provided URL
-    req = requests.get(f"https://{url}")
-    req.raise_for_status()  # Raise an error for bad responses
-    print(f"\nHeaders for {url}:\n{req.headers}")
-except requests.RequestException as e:
-    print(f"Error fetching URL: {e}")
-    sys.exit(1)
+req_api = requests.get("https://ipinfo.io/" + gethostby_ + "/json")
+api_res = json.loads(req_api.text)
 
-try:
-    # Resolve the hostname to an IP address
-    gethostby_ = socket.gethostbyname(url)
-    print(f"\nThe IP address of {url} is: {gethostby_}\n")
-except socket.gaierror as e:
-    print(f"Error resolving hostname: {e}")
-    sys.exit(1)
+print("The IP Address " + gethostby_ + " belongs to: " + api_res['org'])
+print("The IP Address " + gethostby_ + " is located at: " + api_res['city'] + ", " + api_res['region'] + ", " + api_res['country'] + ", " + api_res['postal'])
+print("The IP Address " + gethostby_ + " geological coordinates are: " + api_res['loc'])
 
-try:
-    # Get location information based on the IP address
-    req_two = requests.get(f"https://ipinfo.io/{gethostby_}/json")
-    req_two.raise_for_status()  # Raise an error for bad responses
-    resp_ = req_two.json()  # Directly parse JSON response
 
-    # Print location and region information
-    print(f"Location: {resp_.get('loc', 'N/A')}")
-    print(f"Region: {resp_.get('region', 'N/A')}")
-except requests.RequestException as e:
-    print(f"Error fetching IP info: {e}")
-except json.JSONDecodeError:
-    print("Error decoding JSON response.")
+
 
