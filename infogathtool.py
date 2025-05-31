@@ -16,7 +16,3 @@ api_res = json.loads(req_api.text)
 print("The IP Address " + gethostby_ + " belongs to: " + api_res['org'])
 print("The IP Address " + gethostby_ + " is located at: " + api_res['city'] + ", " + api_res['region'] + ", " + api_res['country'] + ", " + api_res['postal'])
 print("The IP Address " + gethostby_ + " geological coordinates are: " + api_res['loc'])
-
-
-
-
